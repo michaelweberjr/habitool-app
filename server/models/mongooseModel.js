@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI = process.env.MONGO_DB;//'mongodb+srv://abitshaken:Krabhishaken123@krabhi-0.9qffd.mongodb.net/habitool?retryWrites=true&w=majority';
+const MONGO_URI = process.env.MONGO_DB;
 
 // URI for local machine
 // const MONGO_URI = 'mongodb://localhost:27017/habitool';
