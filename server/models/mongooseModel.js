@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-const MONGO_URI =
-  'mongodb+srv://db:db123@cluster0.spklt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const MONGO_URI = process.env.MONGO_DB;//'mongodb+srv://abitshaken:Krabhishaken123@krabhi-0.9qffd.mongodb.net/habitool?retryWrites=true&w=majority';
 
 // URI for local machine
 // const MONGO_URI = 'mongodb://localhost:27017/habitool';
@@ -22,7 +21,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   email: String,
   password: String,
-  full_name: String,
+  name: String,
   cookie: String,
   habit: [
     {
