@@ -1,32 +1,33 @@
-const db = require("../models/mongooseModel.js");
-const bcrypt = require("bcryptjs");
+const db = require('../models/mongooseModel.js');
+const bcrypt = require('bcryptjs');
 
 const signupController = {};
 
 signupController.addUser = async (req, res, next) => {
   // req.body = { email: password: full_name:}
-  const { email, password, fullName } = req.body;
+  const { email, password, name } = req.body;
+  console.log('Signing Up',name, email, password);
   // []
   try {
     const results = await db.User.find({ email });
-    if (results.length) return next({ err: "email has already been used" });
+    if (results.length) return next({ err: 'email has already been used' });
   } catch (e) {
-    return next({ err: "error with searching db for email: " + e });
+    return next({ err: 'error with searching db for email: ' + e });
   }
   const hashedPass = await bcrypt.hash(password, 5);
-  const cookie = await bcrypt.hash(fullName, 5);
+  const cookie = await bcrypt.hash(name, 5);
   try {
     await db.User.create({
       email,
       password: hashedPass,
-      fullName,
+      name,
       cookie,
       habit: [],
     });
   } catch (e) {
-    return next({ err: "error with inserting into user collection: " + e });
+    return next({ err: 'error with inserting into user collection: ' + e });
   }
-  res.cookie("SSID", cookie);
+  res.cookie('SSID', cookie);
   return next();
 };
 

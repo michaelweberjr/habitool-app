@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=development webpack serve --open",
-    "server": "nodemon server/server.js",
+    "server": "nodemon -r dotenv/config server/server.js",
     "dev": "concurrently \"NODE_ENV=development webpack serve --open\" \"npm run server\"",
     "build": "NODE_ENV=production webpack"
   },
