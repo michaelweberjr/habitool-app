@@ -27,7 +27,7 @@ signupController.addUser = async (req, res, next) => {
   } catch (e) {
     return next({ err: 'error with inserting into user collection: ' + e });
   }
-  res.cookie('SSID', cookie);
+  res.locals.doc = {name, email, cookie, habit: []};
   return next();
 };
 

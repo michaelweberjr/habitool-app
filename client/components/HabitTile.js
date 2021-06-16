@@ -37,6 +37,11 @@ const HabitTile = (props) => {
         <div className="habit-tile__days-grp">
           <h4>Days Completed:</h4>
           <div className="habit-tile__days">
+          <div className="sun-check">
+            <label htmlFor="sun-check">Sun</label>
+              <input id="sun-check" name="sun-check" type="checkbox" value="1" disabled/>
+            </div>
+
             <div className="mon-check">
               <label htmlFor="mon-check">Mon</label>
               <input id="mon-check" name="mon-check" type="checkbox" value="1" disabled/>
@@ -66,11 +71,6 @@ const HabitTile = (props) => {
               <label htmlFor="sat-check">Sat</label>
               <input id="sat-check" name="sat-check" type="checkbox" value="1" disabled/>
             </div>
-
-            <div className="sun-check">
-              <label htmlFor="sun-check">Sun</label>
-              <input id="sun-check" name="sun-check" type="checkbox" value="1" disabled/>
-            </div>
           </div>
         </div>
         <div className="habit-tile__btn-grp">
@@ -78,9 +78,9 @@ const HabitTile = (props) => {
             <i className="fas fa-check"></i>
           </button>
 
-          <Link to={`dashboard/habit/${props.name}`} id="habit__edit-btn" name={props.buttonId} onClick={(e) => {
-            console.log('target name: ', e.target.name);
-            dispatch({ type: 'SET_HABIT_INDEX', payload: parseInt(e.target.name)})}}>
+          <Link to={`dashboard/habit/${props.name}`} id="habit__edit-btn" onClick={(e) => {
+            console.log('button id: ', props.buttonId);
+            dispatch({ type: 'SET_HABIT_INDEX', payload: parseInt(props.buttonId)})}}>
             <i className="fas fa-pen"></i>
           </Link>
 

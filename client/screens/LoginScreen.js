@@ -28,7 +28,7 @@ const LoginScreen = (props) => {
   const userInfo = props.email;
   const error = props.error;
 
-  const history = useHistory()
+  const history = useHistory();
 
 
   const loginSubmitHandler = (e) => {

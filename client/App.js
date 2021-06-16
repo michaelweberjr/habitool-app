@@ -14,6 +14,7 @@ import SignupScreen from './screens/SignupScreen';
 import Navbar from './components/Navbar';
 import Overlay from './components/Overlay';
 import Menu from './components/Menu';
+import Session from './components/Session';
 
 const App = () => {
   const [menuToggle, setMenuToggle] = useState(false);
@@ -28,6 +29,9 @@ const App = () => {
       <main>
         <Switch>
           <Route exact path='/'>
+            <Session />
+          </Route>
+          <Route exact path='/login'>
             <LoginScreen isLoggedIn={loggedIn}  loggedInSetter={setLoggedIn} />
           </Route>
           <Route exact path='/signup'>
