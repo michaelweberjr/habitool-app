@@ -3,18 +3,70 @@ import { Link, Redirect } from 'react-router-dom';
 import '../stylesheets/componentStyles/HabitTile.css';
 import { connect, useDispatch } from 'react-redux';
 
-import { deleteHabit } from '../redux/actions/habitActions';
+import { deleteHabit, updateHabit } from '../redux/actions/habitActions';
 
 const mapStateToProps = state => ({
   email: state.user.email
 });
+
+const countStreak = (weeks, weeklyGoal) => {
+  const weekCount = weeks.map(w => w.reduce((c, d) => d ? c+1 : c, 0) >= weeklyGoal);
+  let streak = 0;
+  for(let i = weeks.length - 2; i >= 0; i--) {
+    if(weekCount[i]) streak++;
+    else break; 
+  }
+
+  if(weekCount[weekCount.length - 1]) streak++;
+
+  return streak;
+}
+
+const setupWeeks = (weeks, startDate, weeklyGoal) => {
+  const firstDate = (() => {
+    var date = new Date(startDate);
+    date.setDate(date.getDate() - date.getDay());
+    return date;
+  })();
+
+  const days = daysBetween(firstDate, new Date());
+  const weeksCount = Math.floor(days/7);
+  for(let i = 0; i < weeksCount; i++) 
+    if(!Array.isArray(weeks[i]) || !weeks[i].length) 
+      weeks[i] = (new Array(7)).fill(false);
+
+  return { firstDate, weeklyGoal, streak:countStreak(weeks, weeklyGoal), weeks };
+}
+
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const dayNamesLower = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
 const HabitTile = (props) => {
   const dispatch = useDispatch();
   const deleteHabitHandler = () => {
     deleteHabit({ email: props.email, habit: props.name }, dispatch);
   };
-  const [habitId, setHabitId] = useState('');
+
+  const tracker = setupWeeks(props.habit.weekly, props.habit.startDate, props.habit.weeklyGoal)
+  const currWeek = tracker.weeks[tracker.weeks.length - 1];
+  console.log('Tracker: ', tracker);
+
+  const onClickHandle = (day) => {
+    tracker.weeks[tracker.weeks.length - 1][day] = true;
+    props.habit.weekly = tracker.weeks;
+    updateHabit({ habit: props.habit, email: props.email }, dispatch);
+  }
+
+  const dayCheckBoxes = dayNamesLower.map((name, i) => {
+    return (
+      <div className={`${name}-check`} key={`day${i}`}>
+        <label htmlFor={`${name}-check`}>{dayNames[i]}</label>
+          <input id={`${name}-check`} name={`${name}-check`} type="checkbox" value={i} disabled={currWeek[i]} defaultChecked={currWeek[i]}
+            onClick={() => onClickHandle(i)}
+          />
+      </div>
+    );
+  })
 
   return (
     <div className="habit-tile">
@@ -31,52 +83,19 @@ const HabitTile = (props) => {
         <div className="habit-tile__streak">
           <span>
             <h4>Your Streak:</h4> 
-            <span>{props.total}</span>
+            <span>{tracker.streak ? `${tracker.streak} weeks!` : `No active streaks, keep working!`}</span>
           </span>
         </div>
         <div className="habit-tile__days-grp">
           <h4>Days Completed:</h4>
           <div className="habit-tile__days">
-          <div className="sun-check">
-            <label htmlFor="sun-check">Sun</label>
-              <input id="sun-check" name="sun-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="mon-check">
-              <label htmlFor="mon-check">Mon</label>
-              <input id="mon-check" name="mon-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="tue-check">
-              <label htmlFor="tue-check">Tue</label>
-              <input id="tue-check" name="tues-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="wed-check">
-              <label htmlFor="wed-check">Wed</label>
-              <input id="wed-check" name="wed-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="thu-check">
-              <label htmlFor="thurs-check">Thu</label>
-              <input id="thu-check" name="thurs-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="fri-check">
-              <label htmlFor="fri-check">Fri</label>
-              <input id="fri-check" name="fri-check" type="checkbox" value="1" disabled/>
-            </div>
-
-            <div className="sat-check">
-              <label htmlFor="sat-check">Sat</label>
-              <input id="sat-check" name="sat-check" type="checkbox" value="1" disabled/>
-            </div>
+            {dayCheckBoxes}
           </div>
         </div>
         <div className="habit-tile__btn-grp">
-          <button id="habit__check-btn">
+          {/* <button id="habit__check-btn">
             <i className="fas fa-check"></i>
-          </button>
+          </button> */}
 
           <Link to={`dashboard/habit/${props.name}`} id="habit__edit-btn" onClick={(e) => {
             console.log('button id: ', props.buttonId);
@@ -93,6 +112,19 @@ const HabitTile = (props) => {
   );
 };
 
-
+function daysBetween( date1, date2 ) {
+    //Get 1 day in milliseconds
+    let one_day=1000*60*60*24;
+  
+    // Convert both dates to milliseconds
+    const date1_ms = date1.getTime();
+    const date2_ms = date2.getTime();
+  
+    // Calculate the difference in milliseconds
+    const difference_ms = date2_ms - date1_ms;
+      
+    // Convert back to days and return
+    return Math.floor(difference_ms/one_day); 
+  }
 
 export default connect(mapStateToProps, null)(HabitTile);

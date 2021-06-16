@@ -3,7 +3,7 @@ const db = require('../models/mongooseModel.js');
 const habitController = {};
 
 habitController.addHabit = async (req, res, next) => {
-  const { email, habit, description, total, startDate, endDate, cadence } = req.body;
+  const { email, habit, description, startDate, endDate, weeklyGoal } = req.body;
   const cookieValue = req.cookies.SSID;
   // console.log(cookieValue);
   // check if cookie matches cookie in db
@@ -24,15 +24,11 @@ habitController.addHabit = async (req, res, next) => {
         $push: {
           habit: {
             name: habit,
-            streak: 0,
-            progress: 0,
-            total,
-            cadence,
-            weekly: [[false, false, false, false, false, false, false]],
+            weekly: [[]],
             description,
             startDate,
             endDate,
-            history: [],
+            weeklyGoal,
           },
         },
       },
@@ -40,7 +36,7 @@ habitController.addHabit = async (req, res, next) => {
         new: true,
       }
     );
-    console.log('updated doc is', updatedDoc);
+    console.log('Created doc is', updatedDoc.name);
     res.locals.updatedDoc = updatedDoc;
   } catch (e) {
     return next({ err: 'error with updating the habit: ' + e });
@@ -66,7 +62,7 @@ habitController.removeHabit = async (req, res, next) => {
         new: true,
       }
     );
-    console.log('\n new doc', updatedDoc);
+    console.log('Removed ' + habit.name + ' from ' + updatedDoc.name);
     res.locals.updatedDoc = updatedDoc;
     return next();
   } catch (e) {
@@ -75,38 +71,29 @@ habitController.removeHabit = async (req, res, next) => {
 };
 
 habitController.editHabit = async (req, res, next) => {
-  // req.body = { email, habit, newName, newDescription, newTotal, newStartDate, newEndDate}
-  const {
-    email,
-    habit,
-    newName,
-    newDescription,
-    newTotal,
-    newStartDate,
-    newEndDate,
-  } = req.body;
-  const cookieValue = req.cookies.SSID;
-
-  // check if cookie matches cookie in db
-  const user = await db.User.findOne({ email });
-  if (user.cookie !== cookieValue) return res.redirect('/');
-
-  const arr = [newName, newDescription, newTotal, newStartDate, newEndDate];
-  const arr2 = ['name', 'description', 'total', 'startDate', 'endDate'];
-
-  const changes = {};
-  arr.forEach((el, i) => {
-    if (el) {
-      Object.assign(changes, { ['habit.$[elem].' + arr2[i]]: el });
-    }
-  });
-  console.log(changes);
   try {
-    const updatedDoc = await db.User.findOneAndUpdate({ email }, changes, {
-      arrayFilters: [{ 'elem.name': habit }],
-      new: true,
-    });
-    console.log(updatedDoc);
+      // req.body = { email, habit, newName, newDescription, newTotal, newStartDate, newEndDate}
+    const habit = req.body.habit;
+    const cookieValue = req.cookies.SSID;
+    const email = req.body.email;
+
+     // check if cookie matches cookie in db
+    const user = await db.User.findOne({ email });
+    if(!user) return next({ err: 'cannot find user: ' + email })
+    if (user.cookie !== cookieValue) return res.redirect('/');
+
+    for(let i = 0; i < user.habit.length; i++) {
+      if(user.habit[i].name === habit.name) {
+        console.log('Found update match:', habit.name);
+        for(let key in habit) {
+          user.habit[i][key] = habit[key]; 
+        }
+      }
+    }
+
+    const updatedDoc = await user.save();
+      
+    console.log('Updated doc: ' + updatedDoc.name + ': ' + habit.name);
     res.locals.updatedDoc = updatedDoc;
     return next();
   } catch (e) {

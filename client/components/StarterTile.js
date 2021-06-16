@@ -26,10 +26,9 @@ const StarterTile = (props) => {
       email: props.email,
       habit: name,
       description: description,
-      total: 0,
       startDate: startDate,
       endDate: endDate,
-      cadence: cadence
+      weeklyGoal: Number(cadence),
     }, dispatch);
   };
 

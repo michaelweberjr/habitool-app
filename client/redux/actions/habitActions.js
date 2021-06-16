@@ -81,11 +81,7 @@ const deleteHabit = async ( habit, dispatch ) => {
   dispatch({ type: DELETE_HABIT_REQUEST });
   try {
     const { data } = await Axios.post('/habit/removeHabit',  habitCopy );
-    console.log('hello 1');
-    console.log(data);
-    console.log('hello 2');
     const actionPayload = data.updatedDoc.habit;
-    console.log('hello 3');
     console.log('action payload from delete habit', actionPayload);
     dispatch({ type: DELETE_HABIT_SUCCESS, payload: actionPayload });
   } catch (error) {

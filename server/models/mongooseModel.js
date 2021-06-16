@@ -27,12 +27,10 @@ const userSchema = new Schema({
     {
       name: String,
       description: String,
-      progress: Number,
-      total: Number,
-      weekly: [[Number]],
-      streak: Number,
+      weekly: [[Boolean]],
       startDate: String,
       endDate: String,
+      weeklyGoal: Number,
     },
   ],
 });
