@@ -19,6 +19,11 @@ app.use(cookieParser());
  * Route Handlers
  */
 
+app.get('/dashboard', (req, res) => {
+  console.log('Clicked Refresh on Dashboard');
+  res.status(200);
+  res.sendFile(path.join(__dirname, "../client/index.html"));
+})
 app.use('/session', sessionRouter);
 app.use('/task', taskRouter);
 app.use('/habit', habitRouter);
