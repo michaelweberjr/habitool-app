@@ -11,8 +11,10 @@ const initialState = {
   habit: [], //array of objects
   signupLoading: false, 
   signinLoading: false,
+  sessionLoading: 'start',
   error: false,
   habitIndex: null,
+  route: '/',
 };
 
 const userReducer = (state = initialState, action) => {
@@ -60,7 +62,19 @@ const userReducer = (state = initialState, action) => {
     console.log('action payload for set habit index ', action.payload);
     return {...state, habitIndex: action.payload};
   }
-  
+
+  case types.USER_SESSION_REQUEST:
+    return {...state, sessionLoading:'waiting'};
+  case types.USER_SESSION_FAIL:
+    return {...state, sessionLoading:'ready', error: action.payload, route:'/login' };
+  case types.USER_SESSION_SUCCESS:
+    console.log('action payload for sucessful signin', action.payload);
+    if(action.payload.loggedIn) {
+      return {...state, sessionLoading:'ready', route:'/dashboard', email: action.payload.doc.email, fullName: action.payload.doc.fullName, habit: action.payload.doc.habit };
+    }
+    else {
+      return {...state, sessionLoading:'ready', route:'/login' };
+    }
   default: 
     return state;
   }

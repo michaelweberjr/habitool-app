@@ -3,7 +3,9 @@ import Cookie from 'js-cookie';
 import {
   USER_SIGNIN_REQUEST, USER_SIGNIN_SUCCESS,
   USER_SIGNIN_FAIL, USER_REGISTER_REQUEST,
-  USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_LOGOUT
+  USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, 
+  USER_LOGOUT, USER_SESSION_REQUEST,
+  USER_SESSION_SUCCESS, USER_SESSION_FAIL
 } from '../constants/userConstants';
 
 const signin =  (email, password, dispatch) => {
@@ -49,4 +51,17 @@ const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
 };
 
-export { signin, register, logout };
+const checkSession = () => async (dispatch) => {
+  dispatch({type: USER_SESSION_REQUEST});
+  try {
+    const { data } = await Axios.get('/session');
+    console.log(data);
+    const actionPayload = data;
+    dispatch({ type: USER_SESSION_SUCCESS, payload: actionPayload});
+  }
+  catch (error) {
+    dispatch({ type: USER_SESSION_FAIL, payload: error.message || error });
+  }
+};
+
+export { signin, register, logout, checkSession };

@@ -1,4 +1,4 @@
-const db = require("../models/mongooseModel.js");
+const db = require('../models/mongooseModel.js');
 
 const taskController = {};
 
@@ -20,11 +20,11 @@ taskController.addTask = async (req, res, next) => {
   // console.log(cookieValue);
   const user = await db.User.findOne({ email });
   // console.log("user found from db", user);
-  if (user.cookie !== cookieValue) return res.redirect("/");
+  if (user.cookie !== cookieValue) return res.redirect('/');
   // check if name and start date
   const { habit: dbHabitRows } = await db.User.findOne({
     email,
-    "habit.name": habit,
+    'habit.name': habit,
     cookie: cookieValue,
   });
   // habit name is hiking, task name is climbing
@@ -45,18 +45,18 @@ taskController.addTask = async (req, res, next) => {
 
   if (alreadyExists)
     return next({
-      err: "task already exists for that habit for user: " + email,
+      err: 'task already exists for that habit for user: ' + email,
     });
   try {
     const updatedDoc = await db.User.findOneAndUpdate(
       {
         email,
         cookie: cookieValue,
-        "habit.name": habit,
+        'habit.name': habit,
       },
       {
         $push: {
-          "habit.$[elem].tasks": {
+          'habit.$[elem].tasks': {
             name: task,
             email,
             description,
@@ -70,11 +70,11 @@ taskController.addTask = async (req, res, next) => {
         },
       },
       {
-        arrayFilters: [{ "elem.name": habit }],
+        arrayFilters: [{ 'elem.name': habit }],
         new: true,
       }
     );
-    console.log("update doc ", updatedDoc);
+    console.log('update doc ', updatedDoc);
     res.locals.updatedDoc = updatedDoc;
     // await db.User.create(
     //   {
@@ -95,7 +95,7 @@ taskController.addTask = async (req, res, next) => {
     // );
     // console.log(res.locals.taskid);
   } catch (e) {
-    return next({ err: "error with creating task: " + e });
+    return next({ err: 'error with creating task: ' + e });
   }
   // const arr = [];
   // const daysInMonth = {
@@ -147,23 +147,23 @@ taskController.removeTask = async (req, res, next) => {
   const cookieValue = req.cookies.SSID;
   // check if cookie matches cookie in db
   const user = await db.User.findOne({ email });
-  if (user.cookie !== cookieValue) return res.redirect("/");
+  if (user.cookie !== cookieValue) return res.redirect('/');
   try {
     const updatedDoc = await db.User.findOneAndUpdate(
       { email },
       {
-        $pull: { "habit.$[elem].tasks": { name: task } },
+        $pull: { 'habit.$[elem].tasks': { name: task } },
       },
       {
-        arrayFilters: [{ "elem.name": habit }],
+        arrayFilters: [{ 'elem.name': habit }],
         new: true,
       }
     );
-    console.log("\n new doc", updatedDoc);
+    console.log('\n new doc', updatedDoc);
     res.locals.updatedDoc = updatedDoc;
     return next();
   } catch (e) {
-    return next({ err: "error with removing task: " + e });
+    return next({ err: 'error with removing task: ' + e });
   }
 };
 
@@ -183,16 +183,16 @@ taskController.editTask = async (req, res, next) => {
 
   // check if cookie matches cookie in db
   const user = await db.User.findOne({ email });
-  if (user.cookie !== cookieValue) return res.redirect("/");
+  if (user.cookie !== cookieValue) return res.redirect('/');
 
   const arr = [newName, newDescription, newGoalNum, newStartDate, newEndDate];
-  const arr2 = ["name", "description", "goalNum", "startDate", "endDate"];
+  const arr2 = ['name', 'description', 'goalNum', 'startDate', 'endDate'];
 
   const changes = {};
   arr.forEach((el, i) => {
     if (el) {
       Object.assign(changes, {
-        ["habit.$[outter].tasks.$[inner]" + arr2[i]]: el,
+        ['habit.$[outter].tasks.$[inner]' + arr2[i]]: el,
       });
     }
   });
@@ -200,9 +200,9 @@ taskController.editTask = async (req, res, next) => {
   try {
     const updatedDoc = await db.User.findOneAndUpdate(
       { email },
-      { "habit.$[outter].tasks.$[inner].name": newName },
+      { 'habit.$[outter].tasks.$[inner].name': newName },
       {
-        arrayFilters: [{ "outter.name": habit }, { "inner.name": task }],
+        arrayFilters: [{ 'outter.name': habit }, { 'inner.name': task }],
         new: true,
       }
     );
@@ -210,7 +210,7 @@ taskController.editTask = async (req, res, next) => {
     res.locals.updatedDoc = updatedDoc;
     return next();
   } catch (e) {
-    return next({ err: "err with editing habit: " + e });
+    return next({ err: 'err with editing habit: ' + e });
   }
 };
 

@@ -3,28 +3,22 @@ const bcrypt = require('bcryptjs');
 
 const loginController = {};
 
-loginController.verifyUser = async (req, res, next) => {
+loginController.login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('arrived here');
-  console.log('email', email);
+  console.log(`${email} logging in`);
   try {
-    // [ user, user2 ] = [a]
-    // user = a   user2 = undefined
-    const [user] = await db.User.find({ email });
-    console.log('return obj', user);
-    // [{password: fdashjfksda, cookie: jdfaslk}]
-    if (user === undefined) return next({ err: 'invalid email/password' });
-    // {password: fasdjljkflds}
-    const { password: hashedPass, cookie } = user;
+    const user = await db.User.findOne({ email });
+    if (!user) throw new Error(`${email} was not found`);
+    const hashedPass = user.password;
+    const cookie = user.cookie;
     const passwordMatched = await bcrypt.compare(password, hashedPass);
     if (passwordMatched) {
       res.cookie('SSID', cookie);
       res.locals.doc = user;
       return next();
-    }
-    return next({ err: 'invalid email/password' });
+    } else throw new Error('Password does not match');
   } catch (e) {
-    return next({ err: 'error with searching for user pass in db: ' + e });
+    return next({ err: `ERROR: ${e}` });
   }
 };
 

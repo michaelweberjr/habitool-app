@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch, connect } from 'react-redux';
 
 // Import CSS
@@ -20,6 +20,7 @@ const SignupScreen = (props) => {
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // Pull userRegister state object from State using useSelector hook
   // const userRegister = useSelector(state => state.userRegister);
@@ -40,7 +41,7 @@ const SignupScreen = (props) => {
   useEffect(() => {
     if(userInfo) {
       // come back to this ( redirect to dashboard)
-      props.history.push('/');
+      history.push('/');
     }
   }, [userInfo]);
 

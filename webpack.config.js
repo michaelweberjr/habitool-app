@@ -29,19 +29,7 @@ module.exports = {
 
     headers: { 'Access-Control-Allow-Origin': '*' },
     proxy: {
-      '/api/**': {
-        target: 'http://localhost:5000',
-        secure: false
-      },
-      '/login': {
-        target: 'http://localhost:5000',
-        secure: false
-      },
-      '/signup': {
-        target: 'http://localhost:5000',
-        secure: false
-      },
-      '/habit': {
+      '/': {
         target: 'http://localhost:5000',
         secure: false
       }
