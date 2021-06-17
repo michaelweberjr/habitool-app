@@ -1,12 +1,6 @@
 const db = require('../models/mongooseModel.js');
 const bcrypt = require('bcryptjs');
 
-//SENDGRID API/SETUP//
-const sgMail = require('@sendgrid/mail');
-const SENDGRID_API_KEY =
-  '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';
-sgMail.setApiKey(SENDGRID_API_KEY);
-
 const signupController = {};
 
 signupController.addUser = async (req, res, next) => {
