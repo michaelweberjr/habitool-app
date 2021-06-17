@@ -1,17 +1,12 @@
 const db = require('../models/mongooseModel.js');
 const bcrypt = require('bcryptjs');
 
-//SENDGRID API/SETUP//
-const sgMail = require('@sendgrid/mail');
-const SENDGRID_API_KEY = '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';
-sgMail.setApiKey(SENDGRID_API_KEY);
-
 const signupController = {};
 
 signupController.addUser = async (req, res, next) => {
   // req.body = { email: password: full_name:}
   const { email, password, name } = req.body;
-  console.log('Signing Up',name, email, password);
+  console.log('Signing Up', name, email, password);
   // []
   try {
     const results = await db.User.find({ email });
@@ -29,41 +24,11 @@ signupController.addUser = async (req, res, next) => {
       cookie,
       habit: [],
     });
-
   } catch (e) {
     return next({ err: 'error with inserting into user collection: ' + e });
   }
-  res.locals.doc = {name, email, cookie, habit: []};
+  res.locals.doc = { name, email, cookie, habit: [] };
   return next();
-};
-
-
-signupController.sendSignupEmail = async (req, res, next) => {
-  const { email, name } = req.body;
-  console.log(`about to send an email to ${email}`);
-
-  
-
-  const htmlMessage = `<div style="background-image: url(https://www.verywellfit.com/thmb/pKPO5vlndEhVh_AD3-9YtdL5uKc=/2121x1193/smart/filters:no_upscale()/GettyImages-1061745418-e91c3dd01a0f4dc3a8a80f12222a0644.jpg)"><h1>Welcome to Habitool, ${name}!</h1><p>Thanks for joining the Habitool community, where tens of people are making healthy aspirations a reality.</p></div>`;
-
-  const msg = {
-    to: email, // recipient
-    from: 'habittool@gmail.com', // verified sender
-    subject: 'Welcome to Habitool!',
-    text: 'Habitool wadbabfgiawbg', // ? is this field necessary?
-    html: htmlMessage,
-  };
-
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log('Email sent');
-      return next();
-    })
-    .catch((error) => {
-      console.error(error);
-      return next({ err: 'error sending signup email to: ' + error });
-    });
 };
 
 // signupController.addUser = async (req, res, next) => {

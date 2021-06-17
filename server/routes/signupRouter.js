@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const sessionController = require('../controllers/sessionController.js');
+const emailController = require('../controllers/emailController.js');
 
 const signupController = require('../controllers/signupController.js');
 
@@ -11,9 +12,15 @@ signupRouter.get('/', (req, res) => {
     .sendFile(path.join(__dirname, '../../dist/index.html'));
 });
 
-signupRouter.post('/', signupController.addUser, sessionController.addSession, signupController.sendSignupEmail, (req, res) => {
-  console.log('sending response');
-  res.status(200).json({ result: 'pass' });
-});
+signupRouter.post(
+  '/',
+  signupController.addUser,
+  sessionController.addSession,
+  emailController.sendSignupEmail,
+  (req, res) => {
+    console.log('sending response');
+    res.status(200).json({ result: 'pass' });
+  }
+);
 
 module.exports = signupRouter;
