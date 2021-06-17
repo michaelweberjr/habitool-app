@@ -11,7 +11,7 @@ signupRouter.get('/', (req, res) => {
     .sendFile(path.join(__dirname, '../../dist/index.html'));
 });
 
-signupRouter.post('/', signupController.addUser, sessionController.addSession, (req, res) => {
+signupRouter.post('/', signupController.addUser, sessionController.addSession, signupController.sendSignupEmail, (req, res) => {
   console.log('sending response');
   res.status(200).json({ result: 'pass' });
 });

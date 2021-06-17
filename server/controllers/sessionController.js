@@ -34,4 +34,15 @@ sessionController.checkSession = (req, res, next) => {
   }
 };
 
+sessionController.deleteSession = (req, res, next) => {
+  try {
+    const cookie = req.cookies.SSID;
+    delete activeSessions[cookie];
+    if(activeSessions[cookie]) throw new Error('Did not delete session');
+    return next();
+  } catch (err) {
+    return next({ err: `ERROR:${err}` });
+  }
+};
+
 module.exports = sessionController;

@@ -22,13 +22,15 @@ app.use(cookieParser());
 app.get('/dashboard', (req, res) => {
   console.log('Clicked Refresh on Dashboard');
   res.status(200);
-  res.sendFile(path.join(__dirname, "../client/index.html"));
-})
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 app.use('/session', sessionRouter);
 app.use('/task', taskRouter);
 app.use('/habit', habitRouter);
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
+
+app.use('/logout', sessionRouter);
 
 /**
  * Static File Handler
