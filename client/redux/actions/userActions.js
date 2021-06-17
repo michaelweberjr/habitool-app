@@ -9,19 +9,19 @@ import {
 } from '../constants/userConstants';
 
 const signin =  (email, password, dispatch) => {
-  console.log('email1 is',email);
   const copyEmail = email;
   // return async (dispatch) => {
   // dispatch({ type: USER_SIGNIN_REQUEST, payload: { email, password } });
   dispatch({ type: USER_SIGNIN_REQUEST });
   try {
-    console.log('email2 is', copyEmail);
     //const { data }  = 
     Axios.post('/login', { email: copyEmail, password }).then(res => {
-      const {data} = res;
-      console.log('query result',data);
+      const data = res.data;
       const { email, fullName, habit } = data.doc;
       dispatch({ type: USER_SIGNIN_SUCCESS, payload: {email: copyEmail, fullName, habit} });
+    })
+    .catch(error => {
+      dispatch({ type: USER_SIGNIN_FAIL, payload: error.message });
     });
     // console.log('query result',data);
     // const { email, fullName, habit } = data.doc;
@@ -37,7 +37,6 @@ const register = (name, email, password) => async (dispatch) => {
   dispatch({ type: USER_REGISTER_REQUEST });
   try {
     const { data } = await Axios.post('/signup', { name, email, password });
-    console.log(data);
     const actionPayload = { email, fullName: name };
     dispatch({ type: USER_REGISTER_SUCCESS, payload: actionPayload });
     // Cookie.set('userInfo', JSON.stringify(data));
@@ -51,7 +50,7 @@ const logout = () => async (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   try {
     const { data } = await Axios.get('/logout');
-    console.log('Received server logout response:', data);
+    // console.log('Received server logout response:', data);
   }
   catch(error) {
     dispatch({ type: USER_SESSION_FAIL, payload: error.message || error });
@@ -62,7 +61,6 @@ const checkSession = () => async (dispatch) => {
   dispatch({type: USER_SESSION_REQUEST});
   try {
     const { data } = await Axios.get('/session');
-    console.log(data);
     const actionPayload = data;
     dispatch({ type: USER_SESSION_SUCCESS, payload: actionPayload});
   }

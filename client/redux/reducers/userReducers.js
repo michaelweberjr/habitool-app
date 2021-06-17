@@ -19,16 +19,15 @@ const initialState = {
 
 const userReducer = (state = initialState, action) => {
   switch(action.type){
-  case types.CREATE_NEWUSER: return {
-    ...state,
-    email: action.payload.email, // have we saved userInput email in some var?
-    // password: state.password.anchor, // have we saved userInput password in some var?
-    fullname: action.payload.fullname
-  };
+  // case types.CREATE_NEWUSER: return {
+  //   ...state,
+  //   email: action.payload.email, // have we saved userInput email in some var?
+  //   // password: state.password.anchor, // have we saved userInput password in some var?
+  //   fullname: action.payload.fullname
+  // };
   case types.USER_SIGNIN_REQUEST:
     return {...state, signinLoading: true };
   case types.USER_SIGNIN_SUCCESS:
-    console.log('action payload for sucessful signin', action.payload);
     return {...state, route:'/dashboard', signinloading: false, email: action.payload.email, fullName: action.payload.fullName, habit: action.payload.habit };
   case types.USER_SIGNIN_FAIL:
     return {...state, signinLoading: false, error: action.payload };
@@ -47,19 +46,15 @@ const userReducer = (state = initialState, action) => {
   case types.USER_REGISTER_FAIL:
     return {...state, signupLoading: false, error: action.payload };
   case actionTypes.CREATE_HABIT_SUCCESS: {
-    console.log(action.payload);
     return {...state, habit: action.payload};
   }
   case actionTypes.DELETE_HABIT_SUCCESS: {
-    console.log(action.payload);
     return {...state, habit: action.payload};
   }
   case actionTypes.UPDATE_HABIT_SUCCESS: {
-    console.log(action.payload);
     return {...state, habit: action.payload, habitIndex: null};
   }
   case 'SET_HABIT_INDEX': {
-    console.log('action payload for set habit index ', action.payload);
     return {...state, habitIndex: action.payload};
   }
 
@@ -68,7 +63,6 @@ const userReducer = (state = initialState, action) => {
   case types.USER_SESSION_FAIL:
     return {...state, sessionLoading:'ready', error: action.payload, route:'/login' };
   case types.USER_SESSION_SUCCESS:
-    console.log('action payload for sucessful signin', action.payload);
     if(action.payload.loggedIn) {
       return {...state, sessionLoading:'ready', route:'/dashboard', email: action.payload.doc.email, fullName: action.payload.doc.fullName, habit: action.payload.doc.habit };
     }

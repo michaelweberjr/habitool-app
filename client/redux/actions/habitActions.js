@@ -24,12 +24,11 @@ import {
 
 
 const createHabit = async ( habits, dispatch ) => {
-  dispatch({ type: CREATE_HABIT_REQUEST, payload: { habits } });
+  // dispatch({ type: CREATE_HABIT_REQUEST, payload: { habits } });
   const habitsCopy = habits;
   try {
     const { data } = await Axios.post('/habit/addHabit', habitsCopy);
     const habit = data.updatedDoc.habit;
-    console.log(data); // {docs: {fdsjakl} } data.docs.habit
     dispatch({ type: CREATE_HABIT_SUCCESS, payload: habit });
   } catch (error) {
     dispatch({ type: CREATE_HABIT_FAIL, payload: error.message });
@@ -37,13 +36,11 @@ const createHabit = async ( habits, dispatch ) => {
 };
 
 const updateHabit = async ( habit, dispatch ) => {
-  dispatch({ type: UPDATE_HABIT_REQUEST});
+  // dispatch({ type: UPDATE_HABIT_REQUEST});
   const habitCopy = habit;
   try {
     const { data } = await Axios.post('/habit/editHabit', habitCopy);
-    console.log(data);
     const actionPayload = data.updatedDoc.habit;
-    console.log(actionPayload);
     dispatch({ type: UPDATE_HABIT_SUCCESS, payload: actionPayload });
   } catch (error) {
     dispatch({ type: UPDATE_HABIT_FAIL, payload: error.message });
@@ -78,11 +75,10 @@ const updateHabit = async ( habit, dispatch ) => {
 const deleteHabit = async ( habit, dispatch ) => {
   // habit: {email: 'user email', habit: 'habit name'}
   const habitCopy = habit;
-  dispatch({ type: DELETE_HABIT_REQUEST });
+  // dispatch({ type: DELETE_HABIT_REQUEST });
   try {
     const { data } = await Axios.post('/habit/removeHabit',  habitCopy );
     const actionPayload = data.updatedDoc.habit;
-    console.log('action payload from delete habit', actionPayload);
     dispatch({ type: DELETE_HABIT_SUCCESS, payload: actionPayload });
   } catch (error) {
     dispatch({ type: DELETE_HABIT_FAIL, payload: error.message });
