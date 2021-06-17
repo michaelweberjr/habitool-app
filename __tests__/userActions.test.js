@@ -1,15 +1,18 @@
 import { beforeAll } from '@jest/globals';
 import axios from 'axios';
 import * as actions from '../client/redux/actions/userActions';
+import "regenerator-runtime/runtime.js";
 
 jest.mock('axios');
 
 const testDispatchWrapper = (actions) => {
   let index = 0;
   return (action) => {
-    expect(action.type).toEqual(actions[index].type);
-    expect(action.payload).toEqual(actions[index].payload);
-    index++;
+    try{ 
+      expect(action.type).toEqual(actions[index].type);
+      expect(action.payload).toEqual(actions[index].payload);
+      index++;
+    } catch(err) { console.log(err) }
   };
 };
 
@@ -57,4 +60,63 @@ describe('testing userActions', () => {
     });
   });
 
+  describe('register', () => {
+    it('should respond with success when no error', () => {
+      const registerSuccessDispatch = testDispatchWrapper([
+        {type: 'USER_REGISTER_REQUEST'}, 
+        {type: 'USER_REGISTER_SUCCESS', payload: { email:doc.email, fullName:doc.fullName}},
+      ]);
+
+      axios.post.mockImplementationOnce(() => Promise.resolve({}));
+      actions.register(doc.fullName, doc.email, '12345')(registerSuccessDispatch);
+      expect(axios.post).toHaveBeenCalledWith('/signup', {email:doc.email, name:doc.fullName, password:'12345'});
+    });
+
+    it('should respond with fail when error', () => {
+      const registerSuccessDispatch = testDispatchWrapper([
+        {type: 'USER_REGISTER_REQUEST'}, 
+        {type: 'USER_REGISTER_FAIL', payload: 'Error message'},
+      ]);
+
+      axios.post.mockImplementationOnce(() => Promise.reject({message: 'Error message'}));
+      actions.register(doc.fullName, doc.email, '12345')(registerSuccessDispatch);
+      expect(axios.post).toHaveBeenCalledWith('/signup', {email:doc.email, name:doc.fullName, password:'12345'});
+    });
+  });
+
+  describe('logout', () => {
+    it('should respond with USER_LOGOUT', () => {
+      const logoutSuccessDispatch = testDispatchWrapper([
+        {type: 'USER_LOGOUT'}, 
+      ]);
+
+      axios.get.mockImplementationOnce(() => Promise.resolve({}));
+      actions.logout()(logoutSuccessDispatch);
+      expect(axios.get).toHaveBeenCalledWith('/logout');
+    });
+  });
+
+  describe('checkSession', () => {
+    it('should respond with user data on login', () => {
+      const sessionSuccessDispatch = testDispatchWrapper([
+        {type: 'USER_SESSION_REQUEST'}, 
+        {type: 'USER_SESSION_SUCCESS', payload: { loggedIn:true, doc: {email:doc.email, fullName:doc.fullName, habit:doc.habit}}},
+      ]);
+
+      axios.get.mockImplementationOnce(() => Promise.resolve({data: {loggedIn:true, doc}}));
+      actions.checkSession()(sessionSuccessDispatch);
+      expect(axios.get).toHaveBeenCalledWith('/session');
+    });
+
+    it('should respond with error on FAIL', () => {
+      const sessionSuccessDispatch = testDispatchWrapper([
+        {type: 'USER_SESSION_REQUEST'}, 
+        {type: 'USER_SESSION_FAIL', payload: 'Error message'},
+      ]);
+
+      axios.get.mockImplementationOnce(() => Promise.reject({message: 'Error message'}));
+      actions.checkSession()(sessionSuccessDispatch);
+      expect(axios.get).toHaveBeenCalledWith('/session');
+    });
+  });
 });
