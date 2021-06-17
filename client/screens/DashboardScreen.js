@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import '../stylesheets/screenStyles/DashboardScreen.css';
 
@@ -13,7 +14,8 @@ const mapStateToProps = state =>{
   console.log('state.user.habit',state.user.habit);
 
   return ({
-    habits: state.user.habit
+    habits: state.user.habit,
+    flag: state.user.sessionLoading
   });
 }
 
@@ -21,6 +23,8 @@ const DashboardScreen = (props) => {
   const arr = [];
   console.log(props);
   console.log(props.habits);
+  const history = useHistory();
+  if(props.flag === 'start') history.push('/');
   props.habits.forEach( (el, i) => {
     arr.push(<HabitTile key={i} buttonId={i} name={el.name} habit={el} description={el.description} progress={el.progress} total />);
   }); 

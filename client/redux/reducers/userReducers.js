@@ -29,7 +29,7 @@ const userReducer = (state = initialState, action) => {
     return {...state, signinLoading: true };
   case types.USER_SIGNIN_SUCCESS:
     console.log('action payload for sucessful signin', action.payload);
-    return {...state, signinloading: false, email: action.payload.email, fullName: action.payload.fullName, habit: action.payload.habit };
+    return {...state, route:'/dashboard', signinloading: false, email: action.payload.email, fullName: action.payload.fullName, habit: action.payload.habit };
   case types.USER_SIGNIN_FAIL:
     return {...state, signinLoading: false, error: action.payload };
   case types.USER_LOGOUT:
@@ -43,7 +43,7 @@ const userReducer = (state = initialState, action) => {
   case types.USER_REGISTER_REQUEST:
     return {...state, signupLoading: true };
   case types.USER_REGISTER_SUCCESS:
-    return {...state, signupLoading: false, email: action.payload.email, fullName: action.payload.fullName };
+    return {...state, route:'/dashboard', signupLoading: false, email: action.payload.email, fullName: action.payload.fullName };
   case types.USER_REGISTER_FAIL:
     return {...state, signupLoading: false, error: action.payload };
   case actionTypes.CREATE_HABIT_SUCCESS: {

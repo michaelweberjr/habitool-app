@@ -46,9 +46,16 @@ const register = (name, email, password) => async (dispatch) => {
   }
 };
 
-const logout = () => (dispatch) => {
-  Cookie.remove('userInfo');
+const logout = () => async (dispatch) => {
+  Cookie.remove('SSID');
   dispatch({ type: USER_LOGOUT });
+  try {
+    const { data } = await Axios.get('/logout');
+    console.log('Received server logout response:', data);
+  }
+  catch(error) {
+    dispatch({ type: USER_SESSION_FAIL, payload: error.message || error });
+  }
 };
 
 const checkSession = () => async (dispatch) => {

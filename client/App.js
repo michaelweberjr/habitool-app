@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 // App CSS Import
 import './stylesheets/App.css';
@@ -15,14 +16,18 @@ import Navbar from './components/Navbar';
 import Overlay from './components/Overlay';
 import Menu from './components/Menu';
 import Session from './components/Session';
+import Logout from './components/Logout';
 
-const App = () => {
+const mapStateToProps = (state) => ({
+  route: state.user.route,
+});
+
+const App = (props) => {
   const [menuToggle, setMenuToggle] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <Router>
-      <Navbar click={() => setMenuToggle(true)} />
+      <Navbar atDashboard={props.route === '/dashboard'} click={() => setMenuToggle(true)} />
       <Menu show={menuToggle} click={() => setMenuToggle(false)} />
       <Overlay show={menuToggle} click={() => setMenuToggle(false)} />
       {/* <h1>Hello From HabiTool</h1> */}
@@ -32,7 +37,10 @@ const App = () => {
             <Session />
           </Route>
           <Route exact path='/login'>
-            <LoginScreen isLoggedIn={loggedIn}  loggedInSetter={setLoggedIn} />
+            <LoginScreen />
+          </Route>
+          <Route exact path='/logout'>
+            <Logout />
           </Route>
           <Route exact path='/signup'>
             <SignupScreen />
@@ -47,4 +55,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default connect(mapStateToProps)(App);
