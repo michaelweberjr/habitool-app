@@ -35,7 +35,7 @@ const StarterTile = (props) => {
   return (
     <form className="starter-tile" onSubmit={createTileSubmitHandler}>
       <div className="starter-tile__header">
-        <input type="text" name="habitTitle" placeholder="Add Habit Title" required onChange={(e) => setName(e.target.value)}/>
+        <input type="text" id="habitTitle" name="habitTitle" placeholder="Add Habit Title" required onChange={(e) => setName(e.target.value)}/>
       </div>
       <div className="starter-tile__content-container">
         <div className="starter-tile__repeater">
@@ -68,6 +68,7 @@ const StarterTile = (props) => {
           </button>
         </div>
       </div>
+      {props.test && <div data-testid="emailProps">{props.email}</div>}
     </form>
   );
 };

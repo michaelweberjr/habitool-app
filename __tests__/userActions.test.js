@@ -34,7 +34,7 @@ describe('testing userActions', () => {
         weeklyGoal: 3,
       }],
     }
-  })
+  });
 
   describe('signin', () => {
     it('should respond with user data when logging in', () => {
