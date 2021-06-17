@@ -9,19 +9,19 @@ import {
 } from '../constants/userConstants';
 
 const signin =  (email, password, dispatch) => {
-  console.log('email1 is',email);
   const copyEmail = email;
   // return async (dispatch) => {
   // dispatch({ type: USER_SIGNIN_REQUEST, payload: { email, password } });
   dispatch({ type: USER_SIGNIN_REQUEST });
   try {
-    console.log('email2 is', copyEmail);
     //const { data }  = 
     Axios.post('/login', { email: copyEmail, password }).then(res => {
-      const {data} = res;
-      console.log('query result',data);
+      const data = res.data;
       const { email, fullName, habit } = data.doc;
       dispatch({ type: USER_SIGNIN_SUCCESS, payload: {email: copyEmail, fullName, habit} });
+    })
+    .catch(error => {
+      dispatch({ type: USER_SIGNIN_FAIL, payload: error.message });
     });
     // console.log('query result',data);
     // const { email, fullName, habit } = data.doc;

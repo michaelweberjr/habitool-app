@@ -4,7 +4,7 @@ const server = 'http://localhost:5000';
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 
-describe('Route integration', () => {
+xdescribe('Route integration', () => {
   describe('/', () => {
     describe('GET', () => {
       // Note that we return the evaluation of `request` here! It evaluates to
@@ -104,8 +104,7 @@ describe('Route integration', () => {
     description: 'testing add habit', 
     total: '0', 
     startDate: "2023-05-31", 
-    endDate: "2024-05-31", 
-    cadence: '' }
+    endDate: "2024-05-31"}
 
     describe('wrongPath', () => {
       it('responds with 404 status and html content', () => {
